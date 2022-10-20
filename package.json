@@ -1,17 +1,29 @@
 {
   "name": "holder-snapshot",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Captures Holders snapshot for flux on multiple chains",
   "main": "index.js",
   "repository": "https://github.com/ZelCore-io/holder-snapshot",
-  "author": "stultusmundi <bmg.stultusmundi@gmail.com>",
+  "author": "Zelcore Technologies Inc. <info@zelcore.io>",
+  "contributors": [
+    {
+      "name": "StultusMundi"
+    },
+    {
+      "name": "JeffVader"
+    },
+    {
+      "name": "TheTrunk"
+    }
+  ],
   "license": "MIT",
   "scripts": {
     "snapshot": "node index.js",
     "lint": "eslint ./ --fix"
   },
   "dependencies": {
-    "axios": "^0.26.1"
+    "axios": "^0.26.1",
+    "bignumber.js": "^9.1.0"
   },
   "devDependencies": {
     "eslint": "^8.13.0",

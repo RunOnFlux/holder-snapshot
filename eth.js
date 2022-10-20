@@ -1,9 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable radix */
-/**
- * @author JeffVader
- */
-
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs');

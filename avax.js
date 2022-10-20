@@ -5,12 +5,10 @@ const path = require('path');
 const fs = require('fs');
 
 const BATCH_SIZE = 40000;
-const BSCSCAN_API_KEY = '2ZFM4AB7MG524N2GD1S13Q9MUY16VVJI8F';
+const SNOWTRACE_API_KEY = '';
 
 const urls = [
-  'https://bsc-dataseed.binance.org/',
-  'https://bsc-dataseed1.defibit.io/',
-  'https://bsc-dataseed1.ninicoin.io/',
+  'https://api.avax.network:443/ext/bc/C/rpc',
 ];
 
 function writeToFileSync(filepath, args) {
@@ -20,7 +18,7 @@ function writeToFileSync(filepath, args) {
   fs.closeSync(fd);
 }
 
-async function getBSCRPCResponse(method, params = []) {
+async function getAVAXRPCResponse(method, params = []) {
   const url = urls[Math.floor(Math.random() * urls.length)];
   const data = {
     jsonrpc: '2.0',
@@ -43,7 +41,7 @@ async function getBSCRPCResponse(method, params = []) {
 }
 
 async function getRPCResponse(params = []) {
-  const url = 'https://api.bscscan.com/api';
+  const url = 'https://api.snowtrace.io/api';
   const headers = {
     'Content-Type': 'application/json',
   };
@@ -63,7 +61,7 @@ async function getContractTransferBlock(contract, fromBlock, toBlock) {
     topic0: transferHash,
     module: 'logs',
     action: 'getLogs',
-    apikey: BSCSCAN_API_KEY,
+    apikey: SNOWTRACE_API_KEY,
   };
   const validResponse = false;
   while (!validResponse) {
@@ -98,7 +96,7 @@ async function getContractTransfers(contract, fromBlock, toBlock, batchSize = BA
         logs.push(...blockLogs);
         process.stdout.clearLine();
         process.stdout.cursorTo(0);
-        process.stdout.write(`Fetching contract BSC TXS from block ${blockProcessStart} to block ${blockProcessEnd}. Remaining Blocks: ${Number(toBlockNum - blockProcessEnd)}`);
+        process.stdout.write(`Fetching contract AVAX TXS from block ${blockProcessStart} to block ${blockProcessEnd}. Remaining Blocks: ${Number(toBlockNum - blockProcessEnd)}`);
         blockProcessStart = blockProcessEnd + 1;
         blockProcessEnd = (blockProcessStart + batchSize) > toBlockNum ? toBlockNum : (blockProcessStart + batchSize);
       }
@@ -137,8 +135,8 @@ function getBalanceList(transfers) {
 async function start(contract) {
   let balances = [];
   try {
-    const blockNum = await getBSCRPCResponse('eth_blockNumber');
-    const transfers = await getContractTransfers(contract, '0x7F3236', blockNum); // 8335926, contract created on 8335927
+    const blockNum = await getAVAXRPCResponse('eth_blockNumber');
+    const transfers = await getContractTransfers(contract, 16826970, blockNum); // 16826970, contract created on 16826973
     balances = await getBalanceList(transfers);
   } catch (error) {
     console.log();
@@ -150,8 +148,8 @@ async function start(contract) {
   });
 
   const homeDirPath = path.join(__dirname, './export/');
-  const filepath = `${homeDirPath}bsclist.json`;
-  console.log(`Done BSC - ${balances.length} records found. Exported at ${filepath}. Total Flux-BSC: ${total.toLocaleString()} (${total}).`);
+  const filepath = `${homeDirPath}avaxlist.json`;
+  console.log(`Done AVAX - ${balances.length} records found. Exported at ${filepath}. Total Flux-AVAX: ${total.toLocaleString()} (${total}).`);
   writeToFileSync(filepath, JSON.stringify(balances, null, 2));
 }
 

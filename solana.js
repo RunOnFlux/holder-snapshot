@@ -1,7 +1,3 @@
-/**
- * @author JeffVader
- */
-
 const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
@@ -16,7 +12,7 @@ function writeToFileSync(filepath, args) {
 }
 
 function start(mint) {
-  axios.post('http://api.mainnet-beta.solana.com', {
+  axios.post('http://api.mainnet-beta.solana.com', { // Rate Limit, supply your own :) node.sol.zelcore.io
     jsonrpc: '2.0',
     id: 1,
     method: 'getProgramAccounts',
