@@ -12,7 +12,7 @@ function writeToFileSync(filepath, args) {
 
 let i = 0;
 
-async function fetchBoxesForTokenSend(tokenId, url = 'https://graphql.erg.zelcore.io', maxHeight = 856573, previousBoxes = [], skip = 0) {
+async function fetchBoxesForTokenSend(tokenId, url = 'https://graphql.erg.zelcore.io', maxHeight = 0, previousBoxes = [], skip = 0) {
   const query = `query boxes($take: Int, $skip: Int, $tokenId: String, $spent: Boolean, $maxHeight: Int) {
     boxes(take: $take, skip: $skip, tokenId: $tokenId, spent: $spent, maxHeight: $maxHeight) {
       boxId
