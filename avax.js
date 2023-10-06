@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const BATCH_SIZE = 40000;
-const SNOWTRACE_API_KEY = '';
+const SNOWTRACE_API_KEY = 'MIPRVBYA4JF3GA8ZHEVR3DYZECEC2ZGWRS';
 
 const urls = [
   'https://api.avax.network:443/ext/bc/C/rpc',
@@ -16,6 +16,12 @@ function writeToFileSync(filepath, args) {
   const fd = fs.openSync(filepath, flag);
   fs.writeSync(fd, args);
   fs.closeSync(fd);
+}
+
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 async function getAVAXRPCResponse(method, params = []) {
@@ -88,6 +94,8 @@ async function getContractTransfers(contract, fromBlock, toBlock, batchSize = BA
   let blockProcessEnd = (blockProcessStart + batchSize) > toBlockNum ? toBlockNum : (blockProcessStart + batchSize);
   while (blockProcessStart <= toBlockNum) {
     try {
+      // eslint-disable-next-line no-await-in-loop
+      await delay(120);
       // eslint-disable-next-line no-await-in-loop
       const blockLogs = await getContractTransferBlock(contract, blockProcessStart, blockProcessEnd);
       if (blockLogs.length >= 1000) {

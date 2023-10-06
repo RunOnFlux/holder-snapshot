@@ -17,7 +17,15 @@ function writeToFileSync(filepath, args) {
   fs.closeSync(fd);
 }
 
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function followNext(link) {
+  // eslint-disable-next-line no-await-in-loop
+  await delay(50);
   const response = await axios.get(link, headers);
   holders.push(...response.data.data);
   if (response.data.meta && response.data.meta.links) {

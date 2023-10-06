@@ -19,6 +19,12 @@ function writeToFileSync(filepath, args) {
   fs.closeSync(fd);
 }
 
+function delay(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function getETHRPCResponse(method, params = []) {
   const url = urls[Math.floor(Math.random() * urls.length)];
   const data = {
@@ -89,6 +95,8 @@ async function getContractTransfers(contract, fromBlock, toBlock, batchSize = BA
   let blockProcessEnd = (blockProcessStart + batchSize) > toBlockNum ? toBlockNum : (blockProcessStart + batchSize);
   while (blockProcessStart <= toBlockNum) {
     try {
+      // eslint-disable-next-line no-await-in-loop
+      await delay(20);
       // eslint-disable-next-line no-await-in-loop
       const blockLogs = await getContractTransferBlock(contract, blockProcessStart, blockProcessEnd);
       if (blockLogs.length >= 1000) {
