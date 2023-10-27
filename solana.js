@@ -11,7 +11,38 @@ function writeToFileSync(filepath, args) {
   fs.closeSync(fd);
 }
 
+let solscanData = [];
+
+async function createSolScanSnapshot(mint, offset = 0, size = 50) {
+  try {
+    const URL = `https://api.solscan.io/token/holders?token=${mint}&offset=${offset}&size=${size}`;
+    const response = await axios.get(URL);
+    const holderData = response.data.data.result;
+    if (holderData.length > 0) {
+      solscanData.push(...holderData);
+      createSolScanSnapshot(mint, offset + size, size);
+    } else {
+      let total = 0;
+      let totalSats = 0;
+      solscanData.forEach((holder) => {
+        if (Number(holder.amount) > 0) {
+          total += Number(holder.amount / (10 ** holder.decimals));
+          totalSats += Number(holder.amount);
+        }
+      });
+      const homeDirPath = path.join(__dirname, './export/');
+      const filepath = `${homeDirPath}solscan.json`;
+      console.log(`Done Solana SOLSCAN - ${solscanData.length} records found. Exported at ${filepath}. Total Flux-SOL: ${total.toLocaleString()} (${total}). Sats: ${totalSats.toLocaleString()} (${totalSats})`);
+      writeToFileSync(filepath, JSON.stringify(solscanData, null, 2));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function start(mint) {
+  solscanData = [];
+  createSolScanSnapshot(mint);
   axios.post('https://frequent-tame-diamond.solana-mainnet.quiknode.pro', {
     jsonrpc: '2.0',
     id: 1,
